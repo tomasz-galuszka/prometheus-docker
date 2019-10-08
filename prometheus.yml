@@ -1,0 +1,12 @@
+global:
+  scrape_interval:      15s # scrape targets every 15 seconds globally configured
+  evaluation_interval:  15s # evaluate rules(create new timne series, generate alerts) every 15 seconds golbally configured
+
+rule_files:
+  # - "first.rules"
+  # - "second.rules"
+
+scrape_configs:                     # resources to monitor
+  - job_name: prometheus_itself
+    static_configs:
+      - targets: ['localhost:9090'] # default endpoint is /metrics, so it will be http://localhost:9090/metrics
