@@ -9,4 +9,4 @@ rule_files:
 scrape_configs:                     # resources to monitor
   - job_name: prometheus_itself
     static_configs:
-      - targets: ['localhost:9090'] # default endpoint is /metrics, so it will be http://localhost:9090/metrics
+      - targets: ['node-exporter:9100'] # default endpoint is /metrics to node-exporter
