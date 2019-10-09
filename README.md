@@ -30,8 +30,13 @@ cd helloapp
 ./gradlew clean build
 docker build --build-arg JAR_FILE=./helloapp/build/libs/helloapp-0.0.1-SNAPSHOT.jar -t galuszkat/helloapp -f DockerfileHelloApp .
 ````
+## RUN
+````
+docker run -p 8080:8080 galuszkat/helloapp
+````
 
 ## Docker compose
 ### - prometheus
 ### - node_exporter
 ### - grafana (admin/admin)
+### - helloapp
