@@ -12,8 +12,16 @@ services:
       dockerfile: DockerfileNodeExporter
     ports:
       - "9100:9100"
-  grafana:                          # default admin user is admin/admin.
+  grafana:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
+  helloapp:
+    build:
+      context: .
+      dockerfile: DockerfileHelloApp
+      args:
+        - JAR_FILE=./helloapp/build/libs/helloapp-0.0.1-SNAPSHOT.jar
+    ports:
+      - "8080:8080"
 

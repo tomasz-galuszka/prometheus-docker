@@ -21,3 +21,17 @@ docker build -t galuszkat/node_exported -f DockerfileNodeExporter .
 ````
 docker run -p 9100:9100 galuszkat/node_exported
 ````
+
+# hello app
+
+## BUILD
+````
+cd helloapp
+./gradlew clean build
+docker build --build-arg JAR_FILE=./helloapp/build/libs/helloapp-0.0.1-SNAPSHOT.jar -t galuszkat/helloapp -f DockerfileHelloApp .
+````
+
+## Docker compose
+### - prometheus
+### - node_exporter
+### - grafana (admin/admin)
