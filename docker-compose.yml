@@ -2,24 +2,22 @@ version: '3'
 services:
   prometheus:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./docker/prometheus
+      dockerfile: ./Dockerfile
     ports:
       - "9090:9090"
-  node-exporter:
-    build:
-      context: .
-      dockerfile: DockerfileNodeExporter
-    ports:
-      - "9100:9100"
   grafana:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
+    volumes:
+      - './docker/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml'
+      - './docker/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml'
+      - './docker/grafana/dashboards:/home/grafana/dashboards'
   helloapp:
     build:
       context: .
-      dockerfile: DockerfileHelloApp
+      dockerfile: ./docker/helloapp/Dockerfile
       args:
         - JAR_FILE=./helloapp/build/libs/helloapp-0.0.1-SNAPSHOT.jar
     ports:

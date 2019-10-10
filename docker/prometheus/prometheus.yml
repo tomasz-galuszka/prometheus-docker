@@ -7,9 +7,6 @@ rule_files:
   # - "second.rules"
 
 scrape_configs:                     # resources to monitor
-  - job_name: prometheus_itself
-    static_configs:
-      - targets: ['node-exporter:9100'] # default endpoint is /metrics to node-exporter
   - job_name: helloapp
     metrics_path: '/actuator/prometheus'
     static_configs:
