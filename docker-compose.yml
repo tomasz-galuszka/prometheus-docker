@@ -22,4 +22,10 @@ services:
         - JAR_FILE=./helloapp/build/libs/helloapp-0.0.1-SNAPSHOT.jar
     ports:
       - "8080:8080"
+  locust:
+    build:
+      context: ./docker/locust
+      dockerfile: Dockerfile
+    ports:
+      - "8089:8089"
 
