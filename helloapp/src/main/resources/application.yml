@@ -7,3 +7,16 @@ management:
     export:
       atlas:
         enabled: false
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/helloapp
+    username: root
+    password: baza1
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQLDialect
