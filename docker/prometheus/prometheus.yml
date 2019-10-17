@@ -11,3 +11,6 @@ scrape_configs:                     # resources to monitor
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['helloapp:8080']
+  - job_name: db
+    static_configs:
+      - targets: ['db_prometheus_exporter:9104']
