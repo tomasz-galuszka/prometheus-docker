@@ -3,14 +3,20 @@ package com.galuszkat.helloapp.web
 import com.galuszkat.helloapp.core.Owner
 import javax.validation.constraints.NotBlank
 
-class AccountRequest(
+data class AccountRequest(
     @NotBlank
-    private val firstName: String,
+    val firstName: String,
     @NotBlank
-    private val lastName: String
+    val lastName: String
 ) {
 
   fun toDomain(): Owner {
     return Owner(0, firstName, lastName)
   }
+
+  override fun toString(): String {
+    return "AccountRequest(firstName='$firstName', lastName='$lastName')"
+  }
+
+
 }
