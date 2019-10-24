@@ -1,6 +1,5 @@
 package com.galuszkat.helloapp.core
 
-import com.galuszkat.helloapp.web.AccountController
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -16,7 +15,7 @@ class AccountService(
 ) {
 
   private val FIRST_NUMBER = 1000000000L
-  private val logger = LoggerFactory.getLogger(AccountController::class.java)
+  private val logger = LoggerFactory.getLogger(AccountService::class.java)
 
   fun list(limit: Int): Page<Account> {
     val pageAndSort = PageRequest.of(0, 200, Sort.by("amount").descending())
@@ -24,24 +23,42 @@ class AccountService(
   }
 
   fun create(data: Owner): Account {
-
     val number = this.repository.selectLastAccountNumber().orElse(FIRST_NUMBER) + 1
     val account = Account(number, data, BigDecimal.ZERO, LocalDateTime.now())
 
     return this.repository.save(account)
   }
 
+  @Transactional
   fun deposit(amount: BigDecimal, number: Long): Account {
-    val account = this.repository.findById(number).orElseThrow { RuntimeException("Account not found") }
+    logger.info("--- Start fetching account .....")
+    val account = this.repository.findByNumberLock(number).orElseThrow { RuntimeException("Account not found") }
 
-    logger.info("--- Start making deposit, before: {}", account.amount)
-    Thread.sleep(10000)
+    logger.info("--- Account fetched, deposit: {}", account.amount)
+    Thread.sleep(1000)
 
     val newAmount = account.amount + amount
     val updatedAccount = account.copy(amount = newAmount)
     this.repository.save(updatedAccount)
 
-    logger.info("--- End making deposit, after: {}", updatedAccount.amount)
+    logger.info("--- Updated account, deposit: {}", updatedAccount.amount)
+
+    return updatedAccount
+  }
+
+  @Transactional
+  fun withdraw(amount: BigDecimal, number: Long): Account {
+    logger.info("--- Start fetching account .....")
+    val account = this.repository.findByNumberLock(number).orElseThrow { RuntimeException("Account not found") }
+
+    logger.info("--- Account fetched, deposit: {}", account.amount)
+    Thread.sleep(1000)
+
+    val newAmount = account.amount - amount
+    val updatedAccount = account.copy(amount = newAmount)
+    this.repository.save(updatedAccount)
+
+    logger.info("--- Updated account, deposit: {}", updatedAccount.amount)
 
     return updatedAccount
   }
