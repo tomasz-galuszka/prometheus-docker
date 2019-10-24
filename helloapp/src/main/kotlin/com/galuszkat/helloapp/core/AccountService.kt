@@ -31,40 +31,83 @@ class AccountService(
 
   @Transactional
   fun deposit(amount: BigDecimal, number: Long): Account {
-    logger.info("--- Start fetching account .....")
-    val account = this.repository.findByNumberLock(number).orElseThrow { RuntimeException("Account not found") }
+    val account = this.getAndLock(number)
 
-    logger.info("--- Account fetched, deposit: {}", account.amount)
-    Thread.sleep(1000)
+    sleep()
 
     val newAmount = account.amount + amount
-    val updatedAccount = account.copy(amount = newAmount)
-    this.repository.save(updatedAccount)
 
-    logger.info("--- Updated account, deposit: {}", updatedAccount.amount)
-
-    return updatedAccount
+    return updateAccountAmount(account, newAmount)
   }
 
   @Transactional
   fun withdraw(amount: BigDecimal, number: Long): Account {
-    logger.info("--- Start fetching account .....")
-    val account = this.repository.findByNumberLock(number).orElseThrow { RuntimeException("Account not found") }
+    val account = this.getAndLock(number)
 
-    logger.info("--- Account fetched, deposit: {}", account.amount)
-    Thread.sleep(1000)
+    sleep()
 
     val newAmount = account.amount - amount
-    val updatedAccount = account.copy(amount = newAmount)
-    this.repository.save(updatedAccount)
 
-    logger.info("--- Updated account, deposit: {}", updatedAccount.amount)
+    return updateAccountAmount(account, newAmount)
+  }
 
-    return updatedAccount
+  @Transactional
+  fun transfer(amount:BigDecimal, fromNumber: Long, toNumber: Long): Account {
+    if (fromNumber == toNumber) {
+      throw RuntimeException("Same accounts")
+    }
+
+    val sourceAccount: Account
+    val destinationAccount: Account
+
+    if (compareValues(fromNumber, toNumber) > 0) {
+      sourceAccount = this.getAndLock(fromNumber)
+      destinationAccount = this.getAndLock(toNumber)
+    } else {
+      destinationAccount = this.getAndLock(toNumber)
+      sourceAccount = this.getAndLock(fromNumber)
+    }
+
+    val sourceNewAmount = sourceAccount.amount - amount
+    val destinationNewAmount = destinationAccount.amount + amount
+
+    updateAccountAmount(destinationAccount, destinationNewAmount)
+    val sourceAccountUpdated = updateAccountAmount(sourceAccount, sourceNewAmount)
+
+    return sourceAccountUpdated
   }
 
   fun get(number: Long): Account {
-    return repository.findById(number).orElseThrow { java.lang.RuntimeException("Account not found") }
+    logger.info("--- Start fetching account .....")
+
+    val account = repository.findById(number).orElseThrow { java.lang.RuntimeException("Account not found") }
+
+    logger.info("--- Account fetched, deposit: {}", account.amount)
+    return account
+  }
+
+  @Transactional
+  fun getAndLock(number: Long): Account {
+    logger.info("--- Start fetching account (LOCK) .....")
+
+    val account = repository.findByNumberLock(number).orElseThrow { java.lang.RuntimeException("Account not found") }
+
+    logger.info("--- Account fetched (LOCK), deposit: {}", account.amount)
+    return account
+  }
+
+  private fun updateAccountAmount(account: Account, newAmount: BigDecimal): Account {
+    val updatedAccount = account.copy(amount = newAmount)
+    logger.info("--- Start updating account, deposit: {}", updatedAccount.amount)
+
+    val result = this.repository.save(updatedAccount)
+
+    logger.info("--- Updated account, deposit: {}", result.amount)
+    return result
+  }
+
+  private fun sleep() {
+    Thread.sleep(1000)
   }
 
 }

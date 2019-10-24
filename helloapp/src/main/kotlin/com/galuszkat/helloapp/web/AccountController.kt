@@ -36,4 +36,9 @@ class AccountController(
     fun withdraw(@Valid @RequestBody request: DepositRequest): Account {
         return service.withdraw(request.amount, request.number)
     }
+
+    @PostMapping("/transfer")
+    fun transfer(@Valid @RequestBody request: TransferRequest): Account {
+        return service.transfer(request.amount, request.sourceNumber, request.destinationNumber)
+    }
 }
