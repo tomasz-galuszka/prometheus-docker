@@ -12,7 +12,7 @@ class AccountController(
     private val service: AccountService
 ) {
 
-    @GetMapping("/")
+    @GetMapping
     fun list(): List<Account> {
         return service.list(200).get().collect(Collectors.toList())
     }

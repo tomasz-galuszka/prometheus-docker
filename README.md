@@ -2,7 +2,7 @@
 
 ## BUILD && RUN
 ````
-cd helloapp && ./gradlew clean build && cd ..
+cd helloapp && ./gradlew clean build -x test && cd ..
 docker-compose up --build
 ````
 
