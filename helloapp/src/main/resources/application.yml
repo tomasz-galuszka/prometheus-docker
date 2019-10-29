@@ -12,13 +12,13 @@ management:
         enabled: false
 spring:
   datasource:
-    url: jdbc:mysql://db:3306/helloapp?autoReconnect=true
+    url: jdbc:mysql://localhost:3306/helloapp?autoReconnect=true
     username: root
     password: baza1
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
+      generate_statistics: true
       ddl-auto: create
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.MySQLDialect
+
+#logging.level.org.springframework.transaction.interceptor: TRACE

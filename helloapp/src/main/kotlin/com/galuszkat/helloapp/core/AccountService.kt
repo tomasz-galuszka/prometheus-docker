@@ -29,7 +29,7 @@ class AccountService(
     return this.repository.save(account)
   }
 
-  @Transactional
+  @Transactional(timeout = 7)
   fun deposit(amount: BigDecimal, number: Long): Account {
     val account = this.getAndLock(number)
 
@@ -78,7 +78,7 @@ class AccountService(
   }
 
   fun get(number: Long): Account {
-    logger.info("--- Start fetching account .....")
+//    logger.info("--- Start fetching account .....")
 
     val account = repository.findById(number).orElseThrow { java.lang.RuntimeException("Account not found") }
 
@@ -86,9 +86,8 @@ class AccountService(
     return account
   }
 
-  @Transactional
   fun getAndLock(number: Long): Account {
-    logger.info("--- Start fetching account (LOCK) .....")
+//    logger.info("--- Start fetching account (LOCK) .....")
 
     val account = repository.findByNumberLock(number).orElseThrow { java.lang.RuntimeException("Account not found") }
 
@@ -98,7 +97,7 @@ class AccountService(
 
   private fun updateAccountAmount(account: Account, newAmount: BigDecimal): Account {
     val updatedAccount = account.copy(amount = newAmount)
-    logger.info("--- Start updating account, deposit: {}", updatedAccount.amount)
+//    logger.info("--- Start updating account, deposit: {}", updatedAccount.amount)
 
     val result = this.repository.save(updatedAccount)
 
@@ -107,7 +106,7 @@ class AccountService(
   }
 
   private fun sleep() {
-    Thread.sleep(1000)
+    Thread.sleep(5000)
   }
 
 }
