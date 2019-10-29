@@ -10,6 +10,7 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
+@Transactional(timeout = 5)
 class AccountService(
     private val repository: AccountRepository
 ) {
@@ -29,7 +30,6 @@ class AccountService(
     return this.repository.save(account)
   }
 
-  @Transactional(timeout = 7)
   fun deposit(amount: BigDecimal, number: Long): Account {
     val account = this.getAndLock(number)
 
@@ -40,7 +40,6 @@ class AccountService(
     return updateAccountAmount(account, newAmount)
   }
 
-  @Transactional
   fun withdraw(amount: BigDecimal, number: Long): Account {
     val account = this.getAndLock(number)
 
@@ -51,7 +50,6 @@ class AccountService(
     return updateAccountAmount(account, newAmount)
   }
 
-  @Transactional
   fun transfer(amount:BigDecimal, fromNumber: Long, toNumber: Long): Account {
     if (fromNumber == toNumber) {
       throw RuntimeException("Same accounts")
@@ -106,7 +104,7 @@ class AccountService(
   }
 
   private fun sleep() {
-    Thread.sleep(5000)
+    Thread.sleep(300)
   }
 
 }

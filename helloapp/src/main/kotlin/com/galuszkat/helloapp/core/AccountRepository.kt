@@ -14,6 +14,8 @@ import javax.persistence.QueryHint
 @Repository
 interface AccountRepository : JpaRepository<Account, Long> {
 
+  @Transactional
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT max(a.number) from Account a")
   fun selectLastAccountNumber(): Optional<Long>
 

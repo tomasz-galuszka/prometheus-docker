@@ -7,7 +7,7 @@ class CreateAccountTest(TaskSet):
     def list(self):
         self.client.get("/accounts")
 
-    @task(1)
+    @task(3)
     def createAccount(self):
         self.client.post("/accounts/create", json = {
             "firstName": "Adam",
@@ -23,11 +23,11 @@ class MakeDepositTest(TaskSet):
         }).json()
         self.number = response["number"]
 
-    @task(10)
+    @task(1)
     def list(self):
         self.client.get("/accounts")
 
-    @task(1)
+    @task(10)
     def makeDeposit(self):
         self.client.put("/accounts/deposit", json = {
             "number": self.number,
@@ -43,11 +43,11 @@ class MakeWithdrawTest(TaskSet):
         }).json()
         self.number = response["number"]
 
-    @task(10)
+    @task(1)
     def list(self):
         self.client.get("/accounts")
 
-    @task(1)
+    @task(10)
     def makeDeposit(self):
         self.client.put("/accounts/withdraw", json = {
             "number": self.number,
@@ -70,11 +70,11 @@ class MakeTransferTest(TaskSet):
         self.sourceNumber = response["number"]
         self.destinationNumber = response2["number"]
 
-    @task(10)
+    @task(1)
     def list(self):
         self.client.get("/accounts")
 
-    @task(1)
+    @task(10)
     def makeDeposit(self):
         self.client.post("/accounts/transfer", json = {
             "sourceNumber": self.sourceNumber,
